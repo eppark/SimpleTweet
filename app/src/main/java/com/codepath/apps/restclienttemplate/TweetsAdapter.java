@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -80,13 +81,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName.setText(tweet.user.name);
             tvScreenName.setText("@" + tweet.user.screenName);
             Glide.with(context).load(tweet.user.profileImageUrl).transform(new CircleCrop()).into(ivProfileImage);
-            
+
             // If we have a media attachment, we can add that
             if (tweet.mediaUrl != null) {
                 ivMedia.getLayoutParams().height = (int) (200 * scale + 0.5f);
+                ivMedia.setBackgroundResource(R.drawable.border);
+                ivMedia.setPadding(4,4,4,4);
                 Glide.with(context).load(tweet.mediaUrl).apply(new RequestOptions()
                         .transform(new CenterCrop(), new RoundedCorners(40))).into(ivMedia);
             } else {
+                ivMedia.setBackgroundResource(0);
                 ivMedia.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 Glide.with(context).clear(ivMedia);
             }
@@ -97,6 +101,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     // Clean all elements of the recycler
     public void clear() {
         tweets.clear();
+        notifyDataSetChanged();
+    }
+
+    // Add a list of items -- change to type used
+    public void addAll(List<Tweet> list) {
+        tweets.addAll(list);
         notifyDataSetChanged();
     }
 }

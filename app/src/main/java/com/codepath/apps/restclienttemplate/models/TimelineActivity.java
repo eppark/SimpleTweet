@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.codepath.apps.restclienttemplate.ComposeTweetDialogFragment;
+import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TweetsAdapter;
 import com.codepath.apps.restclienttemplate.TwitterApp;
@@ -37,6 +39,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
     TweetsAdapter adapter;
     User current;
     ActivityTimelineBinding binding;
+    EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,8 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
         // Recycler view setup: layout manager and the adapter
-        binding.rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.rvTweets.setLayoutManager(layoutManager);
         binding.rvTweets.setAdapter(adapter);
 
         // Setup refresh listener which triggers new data loading
@@ -69,12 +73,49 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // Configure the refreshing colors
         binding.swipeContainer.setColorSchemeResources(R.color.primary_blue);
 
+        // Endless scrolling
+        scrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Load more data
+                loadMoreData();
+            }
+        };
+        // Add scroll listener to RecyclerView
+        binding.rvTweets.addOnScrollListener(scrollListener);
+
         client = TwitterApp.getRestClient(this);
         populateCurrentUserInfo();
         populateHomeTimeline();
     }
 
+    // Load more data for the timeline
+    private void loadMoreData() {
+        // Send an API request to get the next set of tweets
+        client.getNextPageOfTweets(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                Log.d(TAG, "onSuccess for loadMoreData");
+
+                // Deserialize and construct new model objects from the API response
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    List<Tweet> tweets = Tweet.fromJsonArray(jsonArray);
+                    adapter.addAll(tweets);
+                } catch (JSONException e) {
+                    Log.e(TAG, "JSON exception for getNextPageOfTweets", e);
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.e(TAG, "onFailure for loadMoreData", throwable);
+            }
+        }, tweets.get(tweets.size() - 1).id - 1);
+    }
+
     private void populateCurrentUserInfo() {
+        // Send an API request to get the current user's info
         client.getCurrentUserInfo(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
@@ -95,6 +136,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
     }
 
     private void populateHomeTimeline() {
+        // Send an API request to get the timeline
         client.getHomeTimeline(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
