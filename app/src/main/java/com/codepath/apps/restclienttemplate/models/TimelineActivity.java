@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -27,7 +28,7 @@ import java.util.List;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity {
+public class TimelineActivity extends AppCompatActivity implements ComposeTweetDialogFragment.ComposeTweetDialogFragmentListener {
 
     public static final String TAG = "TimelineActivity";
 
@@ -35,13 +36,14 @@ public class TimelineActivity extends AppCompatActivity {
     List<Tweet> tweets;
     TweetsAdapter adapter;
     User current;
+    ActivityTimelineBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // Set ViewBinding
-        final ActivityTimelineBinding binding = ActivityTimelineBinding.inflate(getLayoutInflater());
+        binding = ActivityTimelineBinding.inflate(getLayoutInflater());
 
         // layout of activity is stored in a special property called root
         View view = binding.getRoot();
@@ -115,5 +117,13 @@ public class TimelineActivity extends AppCompatActivity {
             composeTweetDialogFragment.show(fm, "fragment_compose_tweet");
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFinishComposeDialog(Tweet tweet) {
+        // Modify and update data
+        tweets.add(0, tweet);
+        adapter.notifyItemInserted(0);
+        binding.rvTweets.smoothScrollToPosition(0);
     }
 }

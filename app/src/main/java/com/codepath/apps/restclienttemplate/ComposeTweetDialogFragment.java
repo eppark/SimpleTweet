@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -24,17 +23,31 @@ import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
+import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
+import org.json.JSONException;
 import org.parceler.Parcels;
 
+import okhttp3.Headers;
+
 public class ComposeTweetDialogFragment extends DialogFragment {
+
+    public static final String TAG = "ComposeTweetDialogFrag";
+    public static final Integer MAX_TWEET_LENGTH = 240;
 
     private EditText etCompose;
     private ImageView ivProfilePicture;
     private Button btnTweet;
     private TextView tvCharacterCount;
-    private static Integer MAX_TWEET_LENGTH = 240;
+
+    TwitterClient client;
+    Tweet tweet;
+
+    public interface ComposeTweetDialogFragmentListener {
+        void onFinishComposeDialog(Tweet tweet);
+    }
 
     public ComposeTweetDialogFragment() {
         // Empty constructor is required for DialogFragment
@@ -62,11 +75,13 @@ public class ComposeTweetDialogFragment extends DialogFragment {
         String url = current.profileImageUrl != null ? current.profileImageUrl : "https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png";
 
         // Set components
+        client = TwitterApp.getRestClient(getContext());
         etCompose = (EditText) view.findViewById(R.id.etCompose);
         ivProfilePicture = (ImageView) view.findViewById(R.id.ivProfilePicture);
         tvCharacterCount = (TextView) view.findViewById(R.id.tvCharacterCount);
         tvCharacterCount.setText(MAX_TWEET_LENGTH.toString());
         btnTweet = (Button) view.findViewById(R.id.btnTweet);
+        btnTweet.setBackgroundTintList(ContextCompat.getColorStateList(getContext(), R.color.lighter_blue));
         btnTweet.setEnabled(false);
 
         Glide.with(this).load(url).transform(new CircleCrop()).into(ivProfilePicture);
@@ -106,9 +121,31 @@ public class ComposeTweetDialogFragment extends DialogFragment {
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String tweetContent = etCompose.getText().toString();
-                Log.d("Button clicked", "Button worked");
+                final String tweetContent = etCompose.getText().toString();
                 //Make an API call to Twitter to publish the tweet
+                client.publishTweet(tweetContent, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        Log.i(TAG, "publish Tweet onSuccess");
+                        try {
+                            tweet = Tweet.fromJson(json.jsonObject);
+                            Log.i(TAG, "Published tweet says: " + tweet.body);
+
+                            // Return input text back to activity through the implemented listener
+                            ComposeTweetDialogFragmentListener listener = (ComposeTweetDialogFragmentListener) getActivity();
+                            listener.onFinishComposeDialog(tweet);
+                            // Close the dialog and return back to the parent activity
+                            dismiss();
+                        } catch (JSONException e) {
+                            Log.e(TAG, "Published tweet error", e);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                        Log.e(TAG, "publish Tweet onFailure", throwable);
+                    }
+                });
             }
         });
 
