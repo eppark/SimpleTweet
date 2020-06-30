@@ -35,7 +35,7 @@ import okhttp3.Headers;
 public class ComposeTweetDialogFragment extends DialogFragment {
 
     public static final String TAG = "ComposeTweetDialogFrag";
-    public static final Integer MAX_TWEET_LENGTH = 240;
+    public static final Integer MAX_TWEET_LENGTH = 280;
 
     private EditText etCompose;
     private ImageView ivProfilePicture;

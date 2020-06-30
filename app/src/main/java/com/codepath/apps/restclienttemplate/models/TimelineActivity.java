@@ -3,7 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -55,6 +55,19 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // Recycler view setup: layout manager and the adapter
         binding.rvTweets.setLayoutManager(new LinearLayoutManager(this));
         binding.rvTweets.setAdapter(adapter);
+
+        // Setup refresh listener which triggers new data loading
+        binding.swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Refresh the list
+                adapter.clear();
+                populateHomeTimeline();
+                binding.swipeContainer.setRefreshing(false);
+            }
+        });
+        // Configure the refreshing colors
+        binding.swipeContainer.setColorSchemeResources(R.color.primary_blue);
 
         client = TwitterApp.getRestClient(this);
         populateCurrentUserInfo();

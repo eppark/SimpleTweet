@@ -76,4 +76,10 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvRelativeTime.setText(TimeFormatter.getTimeDifference(tweet.createdAt));
         }
     }
+
+    // Clean all elements of the recycler
+    public void clear() {
+        tweets.clear();
+        notifyDataSetChanged();
+    }
 }
