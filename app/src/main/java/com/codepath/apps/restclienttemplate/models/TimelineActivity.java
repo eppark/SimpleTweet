@@ -47,6 +47,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
 
         // Set ViewBinding
         binding = ActivityTimelineBinding.inflate(getLayoutInflater());
+        binding.pbLoading.setVisibility(View.VISIBLE);
 
         // layout of activity is stored in a special property called root
         View view = binding.getRoot();
@@ -84,6 +85,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // Add scroll listener to RecyclerView
         binding.rvTweets.addOnScrollListener(scrollListener);
 
+        // Populate the timeline
         client = TwitterApp.getRestClient(this);
         populateCurrentUserInfo();
         populateHomeTimeline();
@@ -145,6 +147,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
+                    binding.pbLoading.setVisibility(View.GONE);
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                 }
