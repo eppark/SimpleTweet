@@ -47,6 +47,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
 
         // Set ViewBinding
         binding = ActivityTimelineBinding.inflate(getLayoutInflater());
+        binding.fabCompose.hide();
         binding.pbLoading.setVisibility(View.VISIBLE);
 
         // layout of activity is stored in a special property called root
@@ -148,6 +149,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyDataSetChanged();
                     binding.pbLoading.setVisibility(View.GONE);
+                    binding.fabCompose.show();
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                 }
@@ -170,9 +172,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_compose) {
-            FragmentManager fm = getSupportFragmentManager();
-            ComposeTweetDialogFragment composeTweetDialogFragment = ComposeTweetDialogFragment.newInstance(current);
-            composeTweetDialogFragment.show(fm, "fragment_compose_tweet");
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -183,5 +183,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         tweets.add(0, tweet);
         adapter.notifyItemInserted(0);
         binding.rvTweets.smoothScrollToPosition(0);
+    }
+
+    // Compose a tweet when we press the button
+    public void onComposeClick(View view) {
+        FragmentManager fm = getSupportFragmentManager();
+        ComposeTweetDialogFragment composeTweetDialogFragment = ComposeTweetDialogFragment.newInstance(current);
+        composeTweetDialogFragment.show(fm, "fragment_compose_tweet");
     }
 }

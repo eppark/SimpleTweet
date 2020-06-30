@@ -8,4 +8,6 @@
     <color name="red">#FF2052</color>
     <color name="orange">#FF8C11</color>
     <color name="light_gray">#AAB8C2</color>
+    <color name="heart_red">#E81C4F</color>
+    <color name="retweet_green">#19CF86</color>
 </resources>
