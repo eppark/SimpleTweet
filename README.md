@@ -12,24 +12,24 @@ The following **required** functionality is completed:
 * [x]	User can **view tweets from their home timeline**
   * [x] User is displayed the username, name, and body for each tweet
   * [x] User is displayed the [relative timestamp](https://gist.github.com/nesquena/f786232f5ef72f6e10a7) for each tweet "8m", "7h"
-* [ ] User can **compose and post a new tweet**
+* [x] User can **compose and post a new tweet**
   * [x] User can click a “Compose” icon in the Action Bar on the top right
   * [x] User can then enter a new tweet and post this to twitter
-  * [ ] User is taken back to home timeline with **new tweet visible** in timeline
-  * [ ] Newly created tweet should be manually inserted into the timeline and not rely on a full refresh
-* [ ] User can **see a counter with total number of characters left for tweet** on compose tweet page
-* [ ] User can **pull down to refresh tweets timeline**
-* [ ] User can **see embedded image media within a tweet** on list or detail view.
+  * [x] User is taken back to home timeline with **new tweet visible** in timeline
+  * [x] Newly created tweet should be manually inserted into the timeline and not rely on a full refresh
+* [x] User can **see a counter with total number of characters left for tweet** on compose tweet page
+* [x] User can **pull down to refresh tweets timeline**
+* [x] User can **see embedded image media within a tweet** on list or detail view.
 
 The following **stretch** features are implemented:
 
 * [x] User is using **"Twitter branded" colors and styles**
-* [ ] User sees an **indeterminate progress indicator** when any background or network task is happening
+* [x] User sees an **indeterminate progress indicator** when any background or network task is happening
 * [ ] User can **select "reply" from detail view to respond to a tweet**
   * [ ] User that wrote the original tweet is **automatically "@" replied in compose**
 * [ ] User can tap a tweet to **open a detailed tweet view**
   * [ ] User can **take favorite (and unfavorite) or reweet** actions on a tweet
-* [ ] User can view more tweets as they scroll with infinite pagination
+* [x] User can view more tweets as they scroll with infinite pagination
 * [x] Compose tweet functionality is build using modal overlay
 * [ ] User can **click a link within a tweet body** on tweet details view. The click will launch the web browser with relevant page opened.
 * [x] Use Parcelable instead of Serializable using the popular [Parceler library](http://guides.codepath.org/android/Using-Parceler).
