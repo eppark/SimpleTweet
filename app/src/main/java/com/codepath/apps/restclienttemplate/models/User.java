@@ -32,7 +32,9 @@ public class User {
         User user = new User();
         user.name = jsonObject.getString("name");
         user.screenName = jsonObject.getString("screen_name");
-        user.profileImageUrl = jsonObject.getString("profile_image_url_https");
+        String url = jsonObject.getString("profile_image_url_https");
+        String extension = url.substring(url.length() - 4);
+        user.profileImageUrl = url.substring(0, url.length() - 10) + "bigger" + extension;
         return user;
     }
 }

@@ -44,4 +44,15 @@
         android:backgroundTint="@color/primary_blue"
         android:text="@string/tweet"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/tvCharacterCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/etCompose"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@+id/btnTweet"
+        android:textColor="@color/dark_gray"
+        tools:text="240" />
 </RelativeLayout>
