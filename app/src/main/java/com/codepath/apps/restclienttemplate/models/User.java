@@ -15,6 +15,18 @@ public class User {
     public User() {
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
     // Return a user from a JSON object
     public static User fromJson(JSONObject jsonObject) throws JSONException {
         User user = new User();

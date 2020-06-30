@@ -1,11 +1,15 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -48,11 +52,29 @@ public class ComposeTweetDialogFragment extends DialogFragment {
         // Fetch arguments from bundle and set title
         User current = Parcels.unwrap(getArguments().getParcelable("user"));
         String url = current.profileImageUrl != null ? current.profileImageUrl : "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png";
+
+        etCompose = (EditText) view.findViewById(R.id.etCompose);
+        ivProfilePicture = (ImageView) view.findViewById(R.id.ivProfilePicture);
+
         Glide.with(this).load(url).transform(new CircleCrop()).into(ivProfilePicture);
 
         // Show soft keyboard automatically and request focus to field
         etCompose.requestFocus();
         getDialog().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+    }
+
+    public void onResume() {
+        // Store access variables for window and blank point
+        Window window = getDialog().getWindow();
+        Point size = new Point();
+        // Store dimensions of the screen in `size`
+        Display display = window.getWindowManager().getDefaultDisplay();
+        display.getSize(size);
+        // Set the width of the dialog proportional to 95% of the screen width
+        window.setLayout((int) (size.x * 0.95), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(Gravity.CENTER);
+        // Call super onResume after sizing
+        super.onResume();
     }
 }

@@ -77,7 +77,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvName.setText(tweet.user.name);
             tvScreenName.setText("@" + tweet.user.screenName);
             Glide.with(context).load(tweet.user.profileImageUrl).transform(new CircleCrop()).into(ivProfileImage);
-            tvRelativeTime.setText("• " + getRelativeTimeAgo(tweet.createdAt));
+            tvRelativeTime.setText(getRelativeTimeAgo(tweet.createdAt));
         }
 
         // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
