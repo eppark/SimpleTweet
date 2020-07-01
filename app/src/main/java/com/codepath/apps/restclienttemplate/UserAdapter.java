@@ -1,6 +1,8 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +15,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
+import com.codepath.apps.restclienttemplate.models.ProfileActivity;
 import com.codepath.apps.restclienttemplate.models.User;
+
+import org.parceler.Parcels;
 
 import java.util.List;
 
@@ -33,7 +38,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_tweet, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
         return new ViewHolder(view);
     }
 
@@ -52,7 +57,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     // Define a viewholder
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         User user;
         ImageView ivProfileImage;
@@ -71,6 +76,23 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             tvName.setText(user.name);
             tvScreenName.setText("@" + user.screenName);
             Glide.with(context).load(user.profileImageUrl).transform(new CircleCrop()).into(ivProfileImage);
+        }
+
+        // When the user clicks on a row, show the profile for the selected user
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition(); // Gets the item position
+
+            // Make sure the position is valid
+            if (position != RecyclerView.NO_POSITION) {
+                User current = users.get(position);
+
+                // Create an intent for the new activity
+                Log.d(TAG, "user profile page clicked");
+                Intent i = new Intent(context, ProfileActivity.class);
+                i.putExtra(User.class.getSimpleName(), Parcels.wrap(current));
+                context.startActivity(i);
+            }
         }
     }
 

@@ -1,11 +1,8 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -16,7 +13,6 @@ import com.codepath.apps.restclienttemplate.TweetFragment;
 import com.codepath.apps.restclienttemplate.UserFragment;
 import com.codepath.apps.restclienttemplate.ViewPagerAdapter;
 import com.codepath.apps.restclienttemplate.databinding.ActivityProfileBinding;
-import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.google.android.material.tabs.TabLayout;
 
 import org.parceler.Parcels;
@@ -43,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Set user info
         user = (User) Parcels.unwrap(getIntent().getParcelableExtra(User.class.getSimpleName()));
         Glide.with(getApplicationContext()).load(user.profileImageUrl).transform(new CircleCrop()).into(binding.ivProfileImage);
-        Glide.with(getApplicationContext()).load(user.profileBannerUrl).transform(new CircleCrop()).into(binding.htabHeader);
+        Glide.with(getApplicationContext()).load(user.profileBannerUrl).into(binding.htabHeader);
 
         getSupportActionBar().setTitle(user.name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

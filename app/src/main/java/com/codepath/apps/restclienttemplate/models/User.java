@@ -40,7 +40,7 @@ public class User {
         user.screenName = jsonObject.getString("screen_name");
         String url = jsonObject.getString("profile_image_url_https");
         String extension = FilenameUtils.getExtension(url);
-        user.profileImageUrl = url.substring(0, url.indexOf("_normal")) + "_bigger." + extension;
+        user.profileImageUrl = url.substring(0, url.indexOf("_normal")) + "." + extension;
         user.profileBannerUrl = jsonObject.has("profile_banner_url") ? jsonObject.getString("profile_banner_url") : null;
         return user;
     }

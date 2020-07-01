@@ -156,10 +156,9 @@ public class UserFragment extends Fragment {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 Log.i(TAG, "followers onSuccess!" + json.toString());
-                JSONArray jsonArray = null;
+                JSONObject jsonObject = json.jsonObject;
                 try {
-                    jsonArray = json.jsonObject.getJSONArray("ids");
-                    getUsers(jsonArray);
+                    adapter.addAll(User.fromJsonArray(jsonObject.getJSONArray("users")));
                     cursor = json.jsonObject.getLong("next_cursor");
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
