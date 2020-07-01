@@ -25,8 +25,8 @@ The following **stretch** features are implemented:
 
 * [x] User is using **"Twitter branded" colors and styles**
 * [x] User sees an **indeterminate progress indicator** when any background or network task is happening
-* [ ] User can **select "reply" from detail view to respond to a tweet**
-  * [ ] User that wrote the original tweet is **automatically "@" replied in compose**
+* [x] User can **select "reply" from detail view to respond to a tweet**
+  * [x] User that wrote the original tweet is **automatically "@" replied in compose**
 * [ ] User can tap a tweet to **open a detailed tweet view**
   * [x] User can **take favorite (and unfavorite) or reweet** actions on a tweet
 * [x] User can view more tweets as they scroll with infinite pagination
@@ -43,6 +43,7 @@ The following **additional** features are implemented:
 
 * [x] Users can favorite/unfavorite and retweet/unretweet from the main timeline
 * [x] Users can see which of their followers retweeted a Tweet from the main timeline
+* [x] Users can press the home button to scroll back to the top
 
 ## Video Walkthrough
 
