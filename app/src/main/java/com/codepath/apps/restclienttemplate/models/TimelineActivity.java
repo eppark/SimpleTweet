@@ -53,6 +53,10 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // layout of activity is stored in a special property called root
         View view = binding.getRoot();
         setContentView(view);
+        setSupportActionBar(binding.toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home);
 
         // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
@@ -171,6 +175,10 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            Log.d(TAG, "pressed");
+            binding.rvTweets.smoothScrollToPosition(0);
+        }
         if (item.getItemId() == R.id.action_compose) {
             return true;
         }

@@ -42,6 +42,7 @@
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         android:textColor="@color/primary_black"
+        android:autoLink="all"
         android:linksClickable="true"
         tools:text="Late for covfefe" />
 
