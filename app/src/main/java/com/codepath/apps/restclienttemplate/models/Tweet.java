@@ -16,6 +16,10 @@ public class Tweet {
     public User user;
     public String mediaUrl;
     public long id;
+    public long retweetCount;
+    public long likeCount;
+    public boolean favorited;
+    public boolean retweeted;
 
     // Create a Tweet from a JSON object
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
@@ -25,6 +29,10 @@ public class Tweet {
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.mediaUrl = jsonObject.getJSONObject("entities").has("media") ? jsonObject.getJSONObject("entities").getJSONArray("media").getJSONObject(0).getString("media_url_https") : null;
         tweet.id = jsonObject.getLong("id");
+        tweet.likeCount = jsonObject.getLong("favorite_count");
+        tweet.retweetCount = jsonObject.getLong("retweet_count");
+        tweet.favorited = jsonObject.getBoolean("favorited");
+        tweet.retweeted = jsonObject.getBoolean("retweeted");
         return tweet;
     }
 

@@ -36,7 +36,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
 
     TwitterClient client;
     List<Tweet> tweets;
-    TweetsAdapter adapter;
+    public TweetsAdapter adapter;
     User current;
     ActivityTimelineBinding binding;
     EndlessRecyclerViewScrollListener scrollListener;
