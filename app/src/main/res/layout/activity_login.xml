@@ -4,23 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".LoginActivity" >
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
-
-        <!-- Toolbar is the actual app bar with text and the action items -->
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/primary_blue"
-            android:theme="@style/ToolBarStyle"/>
-    </com.google.android.material.appbar.AppBarLayout>
+    android:background="@color/lighter_blue"
+    android:backgroundTint="@color/lighter_blue"
+    tools:context=".LoginActivity">
 
     <Button
         android:layout_width="wrap_content"
@@ -28,16 +14,18 @@
         android:layout_below="@+id/imageView"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="0dp"
+        android:backgroundTint="@color/white"
         android:onClick="loginToRest"
-        android:text="@string/login_label" />
+        android:text="@string/login_label"
+        android:textColor="@color/dark_gray" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_below="@+id/appBar"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="200dp"
+        android:scaleType="centerCrop"
         app:srcCompat="@mipmap/ic_launcher_foreground" />
 
 </RelativeLayout>

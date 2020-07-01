@@ -28,10 +28,6 @@ public class LoginActivity extends OAuthLoginActionBarActivity<TwitterClient> {
 		View view = binding.getRoot();
 		setContentView(view);
 
-		// Show the action bar
-		setSupportActionBar(binding.toolbar);
-		getSupportActionBar().setDisplayShowTitleEnabled(true);
-
 		final SampleModel sampleModel = new SampleModel();
 		sampleModel.setName("CodePath");
 
