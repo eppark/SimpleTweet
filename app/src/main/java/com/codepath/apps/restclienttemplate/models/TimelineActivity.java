@@ -176,10 +176,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            // Scroll back to the top
             Log.d(TAG, "pressed");
             binding.rvTweets.smoothScrollToPosition(0);
         }
-        if (item.getItemId() == R.id.action_compose) {
+        if (item.getItemId() == R.id.action_profile) {
+            // Open the user profile
             return true;
         }
         return super.onOptionsItemSelected(item);

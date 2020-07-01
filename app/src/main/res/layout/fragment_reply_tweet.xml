@@ -26,7 +26,7 @@
         android:id="@+id/ivProfilePicture"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_below="@+id/tvReplyingTo"
+        android:layout_below="@+id/ivReplyingTo"
         android:layout_alignParentStart="true"
         android:layout_marginStart="15dp"
         android:layout_marginTop="5dp"
@@ -60,8 +60,20 @@
         android:id="@+id/tvReplyingTo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/ivReplyingTo"
         android:textColor="@color/dark_gray"
         tools:text="Replying to @pepinouo" />
+
+    <ImageView
+        android:id="@+id/ivReplyingTo"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="45dp"
+        android:layout_marginTop="15dp"
+        android:background="#00FFFFFF"
+        android:tint="@color/dark_gray"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_vector_reply" />
 </RelativeLayout>

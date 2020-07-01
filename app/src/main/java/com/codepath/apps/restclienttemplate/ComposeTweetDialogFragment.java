@@ -1,6 +1,8 @@
 package com.codepath.apps.restclienttemplate;
 
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -64,6 +66,7 @@ public class ComposeTweetDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getDialog().getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.dialog_rounded_background));
         return inflater.inflate(R.layout.fragment_compose_tweet, container);
     }
 

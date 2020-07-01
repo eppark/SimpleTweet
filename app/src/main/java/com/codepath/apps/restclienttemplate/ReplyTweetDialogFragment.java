@@ -43,6 +43,7 @@ public class ReplyTweetDialogFragment extends DialogFragment {
     private Button btnReply;
     private TextView tvCharacterCount;
     private TextView tvReplyingTo;
+    private ImageView ivReplyingTo;
 
     TwitterClient client;
     Tweet tweet;
@@ -67,7 +68,8 @@ public class ReplyTweetDialogFragment extends DialogFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_compose_tweet, container);
+        getDialog().getWindow().setBackgroundDrawable(getResources().getDrawable(R.drawable.dialog_rounded_background));
+        return inflater.inflate(R.layout.fragment_reply_tweet, container);
     }
 
     @Override
@@ -84,6 +86,7 @@ public class ReplyTweetDialogFragment extends DialogFragment {
         ivProfilePicture = (ImageView) view.findViewById(R.id.ivProfilePicture);
         tvCharacterCount = (TextView) view.findViewById(R.id.tvCharacterCount);
         tvCharacterCount.setText(MAX_TWEET_LENGTH.toString());
+        ivReplyingTo = (ImageView) view.findViewById(R.id.ivReplyingTo);
         tvReplyingTo = (TextView) view.findViewById(R.id.tvReplyingTo);
         tvReplyingTo.setText("Replying to @" + original.user.screenName);
         btnReply = (Button) view.findViewById(R.id.btnReply);
@@ -127,7 +130,7 @@ public class ReplyTweetDialogFragment extends DialogFragment {
         btnReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String tweetContent = etCompose.getText().toString();
+                String tweetContent = "@" + original.user.screenName + " " + etCompose.getText().toString();
                 //Make an API call to Twitter to reply to the tweet
                 client.publishTweet(tweetContent, original.id, new JsonHttpResponseHandler() {
                     @Override

@@ -109,7 +109,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 public void onClick(View view) {
                     FragmentManager fm = ((TimelineActivity) view.getContext()).getSupportFragmentManager();
                     ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((TimelineActivity) view.getContext()).current, tweet);
-                    replyTweetDialogFragment.show(fm, "fragment_compose_tweet");
+                    replyTweetDialogFragment.show(fm, "fragment_reply_tweet");
                 }
             });
 
@@ -126,7 +126,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
                                 Log.i(TAG, "like Tweet onSuccess");
                                 try {
-                                    tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
+                                    // If this tweet was originally a retweet
+                                    Tweet newTweet = Tweet.fromJson(json.jsonObject);
+                                    if (tweet.retweetedBy != null) {
+                                        newTweet.retweetedBy = tweet.retweetedBy;
+                                    }
+                                    tweets.set(tweets.indexOf(tweet), newTweet);
                                     ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when liking tweet", e);
@@ -145,6 +150,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                             public void onSuccess(int statusCode, Headers headers, JSON json) {
                                 Log.i(TAG, "unlike Tweet onSuccess");
                                 try {
+                                    // If this tweet was originally a retweet
+                                    Tweet newTweet = Tweet.fromJson(json.jsonObject);
+                                    if (tweet.retweetedBy != null) {
+                                        newTweet.retweetedBy = tweet.retweetedBy;
+                                    }
+                                    tweets.set(tweets.indexOf(tweet), newTweet);
                                     tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
                                     ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
                                 } catch (JSONException e) {
@@ -270,8 +281,9 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public void onFinishReplyDialog(Tweet tweet) {
             // Modify and update data
             tweets.add(0, tweet);
+            Log.d(TAG, "onFinishReplyDialog");
             notifyItemInserted(0);
-            ((TimelineActivity) context.getApplicationContext()).binding.rvTweets.smoothScrollToPosition(0);
+            ((TimelineActivity) context).binding.rvTweets.smoothScrollToPosition(0);
         }
     }
 
