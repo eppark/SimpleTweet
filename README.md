@@ -28,7 +28,7 @@ The following **stretch** features are implemented:
 * [ ] User can **select "reply" from detail view to respond to a tweet**
   * [ ] User that wrote the original tweet is **automatically "@" replied in compose**
 * [ ] User can tap a tweet to **open a detailed tweet view**
-  * [ ] User can **take favorite (and unfavorite) or reweet** actions on a tweet
+  * [x] User can **take favorite (and unfavorite) or reweet** actions on a tweet
 * [x] User can view more tweets as they scroll with infinite pagination
 * [x] Compose tweet functionality is build using modal overlay
 * [ ] User can **click a link within a tweet body** on tweet details view. The click will launch the web browser with relevant page opened.
@@ -41,7 +41,7 @@ The following **stretch** features are implemented:
 
 The following **additional** features are implemented:
 
-* [ ] List anything else that you can get done to improve the app functionality!
+* [x] Users can favorite/unfavorite and retweet/unretweet from the main timeline
 
 ## Video Walkthrough
 
