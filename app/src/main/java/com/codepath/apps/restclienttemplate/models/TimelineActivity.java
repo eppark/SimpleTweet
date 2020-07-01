@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,8 +183,11 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
             binding.rvTweets.smoothScrollToPosition(0);
         }
         if (item.getItemId() == R.id.action_profile) {
-            // Open the user profile
-            return true;
+            // Show the user's profile page
+            Log.d(TAG, "user profile page clicked");
+            Intent i = new Intent(this, ProfileActivity.class);
+            i.putExtra(User.class.getSimpleName(), Parcels.wrap(current));
+            startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }

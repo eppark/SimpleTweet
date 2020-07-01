@@ -8,6 +8,8 @@ import com.codepath.oauth.OAuthBaseClient;
 import com.github.scribejava.apis.TwitterApi;
 import com.github.scribejava.core.builder.api.BaseApi;
 
+import java.util.List;
+
 /*
  * 
  * This is the object responsible for communicating with a REST API. 
@@ -58,6 +60,17 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
+	// Get user timeline
+	public void getUserTimeline(String screen_name, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("screen_name", screen_name);
+		params.put("count", 25);
+		params.put("since_id", 1);
+		client.get(apiUrl, params, handler);
+	}
+
 	// Post a Tweet
 	public void publishTweet(String tweetContent, long id, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl("statuses/update.json");
@@ -70,11 +83,22 @@ public class TwitterClient extends OAuthBaseClient {
 		client.post(apiUrl, params, "", handler);
 	}
 
-	// Get more Tweets
+	// Get more Tweets for the home timeline
 	public void getNextPageOfTweets(JsonHttpResponseHandler handler, long maxId) {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
+		params.put("count", 25);
+		params.put("max_id", maxId);
+		client.get(apiUrl, params, handler);
+	}
+
+	// Get more Tweets for a user
+	public void getNextPageOfUserTweets(JsonHttpResponseHandler handler, long maxId, String screen_name) {
+		String apiUrl = getApiUrl("statuses/user_timeline.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("screen_name", screen_name);
 		params.put("count", 25);
 		params.put("max_id", maxId);
 		client.get(apiUrl, params, handler);
@@ -114,5 +138,38 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("id", id);
 		client.post(apiUrl, params, "", handler);
+	}
+
+	// Get followers
+	public void getFollowers(String screen_name, long cursor, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("followers/list.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("screen_name", screen_name);
+		params.put("count", 25);
+		params.put("cursor", cursor);
+		client.get(apiUrl, params, handler);
+	}
+
+	// Get users that the current is following
+	public void getFollowing(String screen_name, long cursor, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("friends/ids.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("screen_name", screen_name);
+		params.put("count", 25);
+		if (cursor != -1) {
+			params.put("cursor", cursor);
+		}
+		client.get(apiUrl, params, handler);
+	}
+
+	// Lookup user IDs
+	public void getUsers(String ids, JsonHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("users/lookup.json");
+		// Can specify query string params directly or through RequestParams.
+		RequestParams params = new RequestParams();
+		params.put("user_id", ids);
+		client.get(apiUrl, params, handler);
 	}
 }
