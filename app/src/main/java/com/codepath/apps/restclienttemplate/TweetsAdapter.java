@@ -90,6 +90,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageButton ibHeart;
         TextView tvRetweetedBy;
         ImageView ivRetweetedBy;
+        ImageView ivExpanded;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -229,6 +230,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     Intent i = new Intent(context, ProfileActivity.class);
                     i.putExtra(User.class.getSimpleName(), Parcels.wrap(tweet.user));
                     context.startActivity(i);
+                }
+            });
+
+            ivMedia.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((TimelineActivity) view.getContext()).showEnlargedImage(tweet.mediaUrl);
                 }
             });
         }

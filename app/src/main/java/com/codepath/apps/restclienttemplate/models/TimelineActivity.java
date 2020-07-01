@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.codepath.apps.restclienttemplate.ComposeTweetDialogFragment;
 import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
@@ -96,6 +98,18 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         client = TwitterApp.getRestClient(this);
         populateCurrentUserInfo();
         populateHomeTimeline();
+
+        // Set up the expanded image to only show when we click a media object
+        // and hide when we click it again
+        binding.ivExpanded.setVisibility(View.GONE);
+        binding.ivDimmer.setVisibility(View.GONE);
+        binding.ivExpanded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.ivExpanded.setVisibility(View.GONE);
+                binding.ivDimmer.setVisibility(View.GONE);
+            }
+        });
     }
 
     // Load more data for the timeline
@@ -205,5 +219,12 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         FragmentManager fm = getSupportFragmentManager();
         ComposeTweetDialogFragment composeTweetDialogFragment = ComposeTweetDialogFragment.newInstance(current);
         composeTweetDialogFragment.show(fm, "fragment_compose_tweet");
+    }
+
+    // Enlarge a media object
+    public void showEnlargedImage(String mediaUrl) {
+        Glide.with(this).load(mediaUrl).into(binding.ivExpanded);
+        binding.ivExpanded.setVisibility(View.VISIBLE);
+        binding.ivDimmer.setVisibility(View.VISIBLE);
     }
 }

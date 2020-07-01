@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".models.TimelineActivity">
+    tools:context=".models.TimelineActivity"
+    android:animateLayoutChanges="true"
+    >
 
     <ProgressBar
         android:id="@+id/pbLoading"
@@ -37,7 +39,8 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/main_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBar"
@@ -76,5 +79,24 @@
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+    <!-- Invisible expanded view for enlargening media -->
+    <ImageView
+        android:id="@+id/ivDimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="@color/primary_black"
+        android:alpha="0.3"
+        tools:visibility="visible" />
+
+    <!-- Invisible expanded view for enlargening media -->
+    <ImageView
+        android:id="@+id/ivExpanded"
+        android:layout_width="380dp"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </RelativeLayout>
