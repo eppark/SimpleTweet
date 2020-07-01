@@ -224,11 +224,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 }
             });
 
-            ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            View.OnClickListener tweetUser = new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(context, ProfileActivity.class);
                     i.putExtra(User.class.getSimpleName(), Parcels.wrap(tweet.user));
+                    context.startActivity(i);
+                }
+            };
+
+            ivProfileImage.setOnClickListener(tweetUser);
+            tvName.setOnClickListener(tweetUser);
+            tvScreenName.setOnClickListener(tweetUser);
+
+            tvRetweetedBy.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(context, ProfileActivity.class);
+                    i.putExtra(User.class.getSimpleName(), Parcels.wrap(tweet.retweetedBy));
                     context.startActivity(i);
                 }
             });
