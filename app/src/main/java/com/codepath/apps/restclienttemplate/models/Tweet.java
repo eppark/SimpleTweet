@@ -5,10 +5,12 @@ import android.text.Html;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Parcel
 public class Tweet {
 
     public String body;
@@ -20,6 +22,11 @@ public class Tweet {
     public long likeCount;
     public boolean favorited;
     public boolean retweeted;
+
+    // No-arg, empty constructor required for Parceler
+    public Tweet() {
+
+    }
 
     // Create a Tweet from a JSON object
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {

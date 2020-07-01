@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -71,7 +72,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     }
 
     // Define a viewholder
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements ReplyTweetDialogFragment.ReplyTweetDialogFragmentListener {
 
         Tweet tweet;
         ImageView ivProfileImage;
@@ -100,6 +101,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ibReply = itemView.findViewById(R.id.ibReply);
             ibRetweet = itemView.findViewById(R.id.ibRetweet);
 
+            ibReply.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    FragmentManager fm = ((TimelineActivity) view.getContext()).getSupportFragmentManager();
+                    ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((TimelineActivity) view.getContext()).current, tweet);
+                    replyTweetDialogFragment.show(fm, "fragment_compose_tweet");
+                }
+            });
+
             ibHeart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View view) {
@@ -115,7 +125,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                                 try {
                                     tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
                                     ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
-
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when liking tweet", e);
                                 }
@@ -242,6 +251,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             } else {
                 ibRetweet.setSelected(false);
             }
+        }
+
+        @Override
+        public void onFinishReplyDialog(Tweet tweet) {
+            // Modify and update data
+            tweets.add(0, tweet);
+            notifyItemInserted(0);
+            ((TimelineActivity) context.getApplicationContext()).binding.rvTweets.smoothScrollToPosition(0);
         }
     }
 

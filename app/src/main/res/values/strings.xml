@@ -8,5 +8,7 @@
     <string name="action_compose">Compose</string>
     <string name="tweet">Tweet</string>
     <string name="whats_happening">What\'s happening?</string>
+    <string name="tweet_your_reply">Tweet your reply</string>
+    <string name="reply">Reply</string>
 
 </resources>
