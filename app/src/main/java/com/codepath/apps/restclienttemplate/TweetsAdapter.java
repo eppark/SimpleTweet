@@ -23,6 +23,7 @@ import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.util.List;
 import java.util.Map;
@@ -84,6 +85,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageButton ibRetweet;
         ImageButton ibReply;
         ImageButton ibHeart;
+        TextView tvRetweetedBy;
+        ImageView ivRetweetedBy;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -98,6 +101,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ibHeart = itemView.findViewById(R.id.ibHeart);
             ibReply = itemView.findViewById(R.id.ibReply);
             ibRetweet = itemView.findViewById(R.id.ibRetweet);
+            tvRetweetedBy = itemView.findViewById(R.id.tvRetweetedBy);
+            ivRetweetedBy = itemView.findViewById(R.id.ivRetweetedBy);
 
             ibReply.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -223,6 +228,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivMedia.setBackgroundResource(0);
                 ivMedia.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 Glide.with(context).clear(ivMedia);
+            }
+
+            // If this was a retweet, show who retweeted it
+            if (tweet.retweetedBy != null) {
+                tvRetweetedBy.setText("Retweeted by " + tweet.retweetedBy.name);
+                tvRetweetedBy.setVisibility(View.VISIBLE);
+                ivRetweetedBy.setVisibility(View.VISIBLE);
+            } else {
+                tvRetweetedBy.setVisibility(View.GONE);
+                ivRetweetedBy.setVisibility(View.GONE);
             }
 
             // Set the relative time and retweet/like counts

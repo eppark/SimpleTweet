@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.models;
 
 import android.text.Html;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,7 @@ public class Tweet {
     public long likeCount;
     public boolean favorited;
     public boolean retweeted;
+    public User retweetedBy;
 
     // No-arg, empty constructor required for Parceler
     public Tweet() {
@@ -30,6 +32,21 @@ public class Tweet {
 
     // Create a Tweet from a JSON object
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
+        // If this tweet is an original Tweet
+        Tweet tweet = new Tweet();
+        if (!jsonObject.has("retweeted_status")) {
+            tweet = createTweet(jsonObject);
+            tweet.retweetedBy = null;
+        } else {
+            // This tweet isn't an original tweet, so we need to get the original Tweet's data
+            tweet = createTweet(jsonObject.getJSONObject("retweeted_status"));
+            tweet.retweetedBy = User.fromJson(jsonObject.getJSONObject("user"));
+        }
+        return tweet;
+    }
+
+    // Assign Tweet urls
+    public static Tweet createTweet(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.body = htmlToString(jsonObject.getString("text"));
         tweet.createdAt = jsonObject.getString("created_at");
