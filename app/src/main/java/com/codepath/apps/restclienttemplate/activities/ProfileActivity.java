@@ -1,27 +1,34 @@
-package com.codepath.apps.restclienttemplate.models;
+package com.codepath.apps.restclienttemplate.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.TweetFragment;
-import com.codepath.apps.restclienttemplate.UserFragment;
-import com.codepath.apps.restclienttemplate.ViewPagerAdapter;
+import com.codepath.apps.restclienttemplate.fragments.ReplyTweetDialogFragment;
+import com.codepath.apps.restclienttemplate.fragments.TweetFragment;
+import com.codepath.apps.restclienttemplate.fragments.UserFragment;
+import com.codepath.apps.restclienttemplate.adapters.ViewPagerAdapter;
 import com.codepath.apps.restclienttemplate.databinding.ActivityProfileBinding;
+import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import org.parceler.Parcels;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements ReplyTweetDialogFragment.ReplyTweetDialogFragmentListener {
 
     public static final String TAG = "ProfileActivity";
     public User user;
     public ActivityProfileBinding binding;
+    View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
         binding = ActivityProfileBinding.inflate(getLayoutInflater());
 
         // layout of activity is stored in a special property called root
-        View view = binding.getRoot();
+        view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.htabToolbar);
 
@@ -108,5 +115,30 @@ public class ProfileActivity extends AppCompatActivity {
         binding.ivExpanded.setVisibility(View.VISIBLE);
         binding.ivDimmer.setVisibility(View.VISIBLE);
         binding.ivDimmer.setAlpha((float) 0.3);
+    }
+
+    @Override
+    public void onFinishReplyDialog(final Tweet tweet) {
+        // Modify and update data
+        ((TweetFragment) ((ViewPagerAdapter) binding.htabViewpager.getAdapter()).getItem(0)).tweets.add(0, tweet);
+        Log.d(TAG, "onFinishReplyDialog");
+        ((TweetFragment) ((ViewPagerAdapter) binding.htabViewpager.getAdapter()).getItem(0)).adapter.notifyItemInserted(0);
+        ((TweetFragment) ((ViewPagerAdapter) binding.htabViewpager.getAdapter()).getItem(0)).rvTweets.smoothScrollToPosition(0);
+
+        // Define the click listener as a member
+        View.OnClickListener myOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent for the new activity
+                Intent i = new Intent(getApplicationContext(), TweetActivity.class);
+                i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                startActivity(i);
+            }
+        };
+
+        // Pass in the click listener when displaying the Snackbar
+        Snackbar.make(view, R.string.snackbar_reply_text, Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_action, myOnClickListener)
+                .show(); // Don’t forget to show!
     }
 }

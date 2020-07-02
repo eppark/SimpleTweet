@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate;
+package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -19,8 +20,15 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-import com.codepath.apps.restclienttemplate.models.ProfileActivity;
-import com.codepath.apps.restclienttemplate.models.TimelineActivity;
+import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.TimeFormatter;
+import com.codepath.apps.restclienttemplate.TwitterApp;
+import com.codepath.apps.restclienttemplate.TwitterClient;
+import com.codepath.apps.restclienttemplate.activities.TweetActivity;
+import com.codepath.apps.restclienttemplate.fragments.ReplyTweetDialogFragment;
+import com.codepath.apps.restclienttemplate.fragments.TweetFragment;
+import com.codepath.apps.restclienttemplate.activities.ProfileActivity;
+import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
@@ -84,7 +92,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     }
 
     // Define a viewholder
-    public class ViewHolder extends RecyclerView.ViewHolder implements ReplyTweetDialogFragment.ReplyTweetDialogFragmentListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         Tweet tweet;
         ImageView ivProfileImage;
@@ -101,13 +109,15 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         TextView tvRetweetedBy;
         ImageView ivRetweetedBy;
 
+        RelativeLayout container;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvName = itemView.findViewById(R.id.tvName);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
-            tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
+            tvRelativeTime = itemView.findViewById(R.id.tvAbsoluteTime);
             ivMedia = itemView.findViewById(R.id.ivMedia);
             tvRetweets = itemView.findViewById(R.id.tvRetweets);
             tvLikes = itemView.findViewById(R.id.tvLikes);
@@ -116,6 +126,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ibRetweet = itemView.findViewById(R.id.ibRetweet);
             tvRetweetedBy = itemView.findViewById(R.id.tvRetweetedBy);
             ivRetweetedBy = itemView.findViewById(R.id.ivRetweetedBy);
+
+            container = itemView.findViewById(R.id.container);
 
             ibReply.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -129,7 +141,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                         ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((ProfileActivity) view.getContext()).user, tweet);
                         replyTweetDialogFragment.show(fm, "fragment_reply_tweet");
                     }
-
                 }
             });
 
@@ -293,9 +304,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                     }
                 }
             });
+
+            View.OnClickListener tweetTweet = new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "tweet activity page clicked");
+
+                    // Create an intent for the new activity
+                    Intent i = new Intent(context, TweetActivity.class);
+                    i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                    context.startActivity(i);
+                }
+            };
+
+            container.setOnClickListener(tweetTweet);
+            tvBody.setOnClickListener(tweetTweet);
         }
 
-        public void bind(Tweet tweet) {
+        public void bind(final Tweet tweet) {
             this.tweet = tweet;
             tvBody.setText(tweet.body);
             tvName.setText(tweet.user.name);
@@ -347,15 +373,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             } else {
                 ibRetweet.setSelected(false);
             }
-        }
-
-        @Override
-        public void onFinishReplyDialog(Tweet tweet) {
-            // Modify and update data
-            tweets.add(0, tweet);
-            Log.d(TAG, "onFinishReplyDialog");
-            notifyItemInserted(0);
-            ((TimelineActivity) context).binding.rvTweets.smoothScrollToPosition(0);
         }
     }
 

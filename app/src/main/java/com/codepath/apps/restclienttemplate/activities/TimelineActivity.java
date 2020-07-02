@@ -1,4 +1,4 @@
-package com.codepath.apps.restclienttemplate.models;
+package com.codepath.apps.restclienttemplate.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
@@ -14,15 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
-import com.codepath.apps.restclienttemplate.ComposeTweetDialogFragment;
+import com.codepath.apps.restclienttemplate.fragments.ComposeTweetDialogFragment;
 import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
-import com.codepath.apps.restclienttemplate.TweetsAdapter;
+import com.codepath.apps.restclienttemplate.adapters.TweetsAdapter;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
+import com.codepath.apps.restclienttemplate.fragments.ReplyTweetDialogFragment;
+import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,16 +37,17 @@ import java.util.List;
 
 import okhttp3.Headers;
 
-public class TimelineActivity extends AppCompatActivity implements ComposeTweetDialogFragment.ComposeTweetDialogFragmentListener {
+public class TimelineActivity extends AppCompatActivity implements ComposeTweetDialogFragment.ComposeTweetDialogFragmentListener, ReplyTweetDialogFragment.ReplyTweetDialogFragmentListener {
 
     public static final String TAG = "TimelineActivity";
 
     TwitterClient client;
-    List<Tweet> tweets;
+    public List<Tweet> tweets;
     public TweetsAdapter adapter;
     public User current;
     public ActivityTimelineBinding binding;
     EndlessRecyclerViewScrollListener scrollListener;
+    View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,7 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         binding.pbLoading.setVisibility(View.VISIBLE);
 
         // layout of activity is stored in a special property called root
-        View view = binding.getRoot();
+        view = binding.getRoot();
         setContentView(view);
         setSupportActionBar(binding.toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -207,11 +211,27 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
     }
 
     @Override
-    public void onFinishComposeDialog(Tweet tweet) {
+    public void onFinishComposeDialog(final Tweet tweet) {
         // Modify and update data
         tweets.add(0, tweet);
         adapter.notifyItemInserted(0);
         binding.rvTweets.smoothScrollToPosition(0);
+
+        // Define the click listener as a member
+        View.OnClickListener myOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent for the new activity
+                Intent i = new Intent(getApplicationContext(), TweetActivity.class);
+                i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                startActivity(i);
+            }
+        };
+
+        // Pass in the click listener when displaying the Snackbar
+        Snackbar.make(view, R.string.snackbar_compose_text, Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_action, myOnClickListener)
+                .show(); // Don’t forget to show!
     }
 
     // Compose a tweet when we press the button
@@ -227,5 +247,30 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         binding.ivExpanded.setVisibility(View.VISIBLE);
         binding.ivDimmer.setVisibility(View.VISIBLE);
         binding.ivDimmer.setAlpha((float) 0.3);
+    }
+
+    @Override
+    public void onFinishReplyDialog(final Tweet tweet) {
+        // Modify and update data
+        tweets.add(0, tweet);
+        Log.d(TAG, "onFinishReplyDialog");
+        adapter.notifyItemInserted(0);
+        binding.rvTweets.smoothScrollToPosition(0);
+
+        // Define the click listener as a member
+        View.OnClickListener myOnClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an intent for the new activity
+                Intent i = new Intent(getApplicationContext(), TweetActivity.class);
+                i.putExtra(Tweet.class.getSimpleName(), Parcels.wrap(tweet));
+                startActivity(i);
+            }
+        };
+
+        // Pass in the click listener when displaying the Snackbar
+        Snackbar.make(view, R.string.snackbar_reply_text, Snackbar.LENGTH_LONG)
+                .setAction(R.string.snackbar_action, myOnClickListener)
+                .show(); // Don’t forget to show!
     }
 }

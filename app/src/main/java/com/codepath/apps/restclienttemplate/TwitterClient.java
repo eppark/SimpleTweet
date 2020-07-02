@@ -170,4 +170,22 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("user_id", ids);
         client.get(apiUrl, params, handler);
     }
+
+    // Follow a user
+    public void followUser(String screen_name, JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("friendships/create.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screen_name);
+        client.post(apiUrl, params, "", handler);
+    }
+
+    // Unfollow a user
+    public void unfollowUser(String screen_name, JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("friendships/destroy.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("screen_name", screen_name);
+        client.post(apiUrl, params, "", handler);
+    }
 }

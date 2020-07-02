@@ -11,5 +11,8 @@
     <string name="tweet_your_reply">Tweet your reply</string>
     <string name="reply">Reply</string>
     <string name="action_profile">Profile</string>
+    <string name="snackbar_reply_text">SENT REPLY</string>
+    <string name="snackbar_action">VIEW</string>
+    <string name="snackbar_compose_text">SENT TWEET</string>
 
 </resources>

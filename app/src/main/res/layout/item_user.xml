@@ -50,4 +50,13 @@
         android:layout_toEndOf="@+id/ivProfileImage"
         android:text="TextView" />
 
+    <Button
+        android:id="@+id/btnFollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary_blue"
+        android:text="Following"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+
 </RelativeLayout>
