@@ -50,6 +50,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         this.scale = context.getResources().getDisplayMetrics().density;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     // For each row, inflate the layout for the Tweet
     @NonNull
     @Override
@@ -90,7 +100,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         ImageButton ibHeart;
         TextView tvRetweetedBy;
         ImageView ivRetweetedBy;
-        ImageView ivExpanded;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -111,9 +120,16 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ibReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    FragmentManager fm = ((TimelineActivity) view.getContext()).getSupportFragmentManager();
-                    ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((TimelineActivity) view.getContext()).current, tweet);
-                    replyTweetDialogFragment.show(fm, "fragment_reply_tweet");
+                    if (view.getContext().getClass() == TimelineActivity.class) {
+                        FragmentManager fm = ((TimelineActivity) view.getContext()).getSupportFragmentManager();
+                        ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((TimelineActivity) view.getContext()).current, tweet);
+                        replyTweetDialogFragment.show(fm, "fragment_reply_tweet");
+                    } else {
+                        FragmentManager fm = ((ProfileActivity) view.getContext()).getSupportFragmentManager();
+                        ReplyTweetDialogFragment replyTweetDialogFragment = ReplyTweetDialogFragment.newInstance(((ProfileActivity) view.getContext()).user, tweet);
+                        replyTweetDialogFragment.show(fm, "fragment_reply_tweet");
+                    }
+
                 }
             });
 
@@ -136,7 +152,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                                         newTweet.retweetedBy = tweet.retweetedBy;
                                     }
                                     tweets.set(tweets.indexOf(tweet), newTweet);
-                                    ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+
+                                    if (view.getContext().getClass() == TimelineActivity.class) {
+                                        ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+                                    } else {
+                                        ((TweetFragment) ((ViewPagerAdapter) ((ProfileActivity) view.getContext()).binding.htabViewpager.getAdapter()).getItem(0)).adapter.notifyDataSetChanged();
+                                    }
+
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when liking tweet", e);
                                 }
@@ -161,7 +183,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                                     }
                                     tweets.set(tweets.indexOf(tweet), newTweet);
                                     tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
-                                    ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+
+                                    if (view.getContext().getClass() == TimelineActivity.class) {
+                                        ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+                                    } else {
+                                        ((TweetFragment) ((ViewPagerAdapter) ((ProfileActivity) view.getContext()).binding.htabViewpager.getAdapter()).getItem(0)).adapter.notifyDataSetChanged();
+                                    }
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when unliking tweet", e);
                                 }
@@ -190,7 +217,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                                 Log.i(TAG, "retweet Tweet onSuccess");
                                 try {
                                     tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
-                                    ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+
+                                    if (view.getContext().getClass() == TimelineActivity.class) {
+                                        ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+                                    } else {
+                                        ((TweetFragment) ((ViewPagerAdapter) ((ProfileActivity) view.getContext()).binding.htabViewpager.getAdapter()).getItem(0)).adapter.notifyDataSetChanged();
+                                    }
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when retweeting tweet", e);
                                 }
@@ -209,7 +241,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                                 Log.i(TAG, "unretweet Tweet onSuccess");
                                 try {
                                     tweets.set(tweets.indexOf(tweet), Tweet.fromJson(json.jsonObject));
-                                    ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+
+                                    if (view.getContext().getClass() == TimelineActivity.class) {
+                                        ((TimelineActivity) view.getContext()).adapter.notifyDataSetChanged();
+                                    } else {
+                                        ((TweetFragment) ((ViewPagerAdapter) ((ProfileActivity) view.getContext()).binding.htabViewpager.getAdapter()).getItem(0)).adapter.notifyDataSetChanged();
+                                    }
                                 } catch (JSONException e) {
                                     Log.e(TAG, "JSON exception when unretweeting tweet", e);
                                 }
@@ -249,7 +286,11 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             ivMedia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((TimelineActivity) view.getContext()).showEnlargedImage(tweet.mediaUrl);
+                    if (view.getContext().getClass() == TimelineActivity.class) {
+                        ((TimelineActivity) view.getContext()).showEnlargedImage(tweet.mediaUrl);
+                    } else {
+                        ((ProfileActivity) view.getContext()).showEnlargedImage(tweet.mediaUrl);
+                    }
                 }
             });
         }
@@ -264,8 +305,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             // If we have a media attachment, we can add that
             if (tweet.mediaUrl != null) {
                 ivMedia.getLayoutParams().height = (int) (200 * scale + 0.5f);
-                ivMedia.setBackgroundResource(R.drawable.border);
-                ivMedia.setPadding(4, 4, 4, 4);
                 Glide.with(context).load(tweet.mediaUrl).apply(new RequestOptions()
                         .transform(new CenterCrop(), new RoundedCorners(40))).into(ivMedia);
             } else {

@@ -226,5 +226,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         Glide.with(this).load(mediaUrl).into(binding.ivExpanded);
         binding.ivExpanded.setVisibility(View.VISIBLE);
         binding.ivDimmer.setVisibility(View.VISIBLE);
+        binding.ivDimmer.setAlpha((float) 0.3);
     }
 }

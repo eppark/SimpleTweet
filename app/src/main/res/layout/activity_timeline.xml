@@ -93,10 +93,11 @@
     <ImageView
         android:id="@+id/ivExpanded"
         android:layout_width="380dp"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
+        android:layout_height="700dp"
+        android:layout_centerInParent="true"
         android:scaleType="fitCenter"
         android:visibility="gone"
+        tools:srcCompat="@tools:sample/backgrounds/scenic"
         tools:visibility="visible" />
 
 </RelativeLayout>

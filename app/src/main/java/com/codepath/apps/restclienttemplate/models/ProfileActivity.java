@@ -20,7 +20,7 @@ import org.parceler.Parcels;
 public class ProfileActivity extends AppCompatActivity {
 
     public static final String TAG = "ProfileActivity";
-    User user;
+    public User user;
     public ActivityProfileBinding binding;
 
     @Override
@@ -69,6 +69,18 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+
+        // Set up the expanded image to only show when we click a media object
+        // and hide when we click it again
+        binding.ivExpanded.setVisibility(View.GONE);
+        binding.ivDimmer.setVisibility(View.GONE);
+        binding.ivExpanded.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                binding.ivExpanded.setVisibility(View.GONE);
+                binding.ivDimmer.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void setupViewPager() {
@@ -88,5 +100,13 @@ public class ProfileActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Enlarge a media object
+    public void showEnlargedImage(String mediaUrl) {
+        Glide.with(this).load(mediaUrl).into(binding.ivExpanded);
+        binding.ivExpanded.setVisibility(View.VISIBLE);
+        binding.ivDimmer.setVisibility(View.VISIBLE);
+        binding.ivDimmer.setAlpha((float) 0.3);
     }
 }

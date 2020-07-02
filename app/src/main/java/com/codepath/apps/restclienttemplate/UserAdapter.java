@@ -69,6 +69,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvName = itemView.findViewById(R.id.tvName);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(User user) {

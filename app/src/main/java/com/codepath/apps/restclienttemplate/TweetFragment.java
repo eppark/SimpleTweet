@@ -36,7 +36,7 @@ public class TweetFragment extends Fragment {
     public static final String TAG = "TweetFragment";
     User user;
     RecyclerView rvTweets;
-    TweetsAdapter adapter;
+    public TweetsAdapter adapter;
     List<Tweet> tweets;
     SwipeRefreshLayout swipeContainer;
     EndlessRecyclerViewScrollListener scrollListener;
