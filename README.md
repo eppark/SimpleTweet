@@ -2,7 +2,7 @@
 
 **SimpleTweet** is an android app that allows a user to view their Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
 
-Time spent: **X** hours spent in total
+Time spent: **30** hours spent in total
 
 ## User Stories
 
@@ -27,7 +27,7 @@ The following **stretch** features are implemented:
 * [x] User sees an **indeterminate progress indicator** when any background or network task is happening
 * [x] User can **select "reply" from detail view to respond to a tweet**
   * [x] User that wrote the original tweet is **automatically "@" replied in compose**
-* [ ] User can tap a tweet to **open a detailed tweet view**
+* [x] User can tap a tweet to **open a detailed tweet view**
   * [x] User can **take favorite (and unfavorite) or reweet** actions on a tweet
 * [x] User can view more tweets as they scroll with infinite pagination
 * [x] Compose tweet functionality is build using modal overlay
@@ -47,6 +47,10 @@ The following **additional** features are implemented:
 * [x] Users can see user-specific timelines on their profile page
 * [x] Users can tap profile pictures or items in a followers/following tab to view the selected user's profile page
 * [x] Users can tap whoever retweeted a Tweet on their feed to see the retweeter's profile page
+* [x] Users can tap image previews to pull up the full image
+* [x] Replying to tweets and composing tweets are modal dialogs
+* [x] Snackbar appears whenever a user composes or replies to a tweet, allowing them to view their new Tweet immediately
+* [x] Users can follow and unfollow other users on their profile page or through their followers/following tabs
 
 ## Video Walkthrough
 
@@ -58,7 +62,7 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Ran into rate-exceeded limits a lot, so had to create another Twitter account to get past that. Learned a lot about selectors for creating custom buttons and text click actions. Learned a lot about tab layouts.
 
 ## Open-source libraries used
 
@@ -67,7 +71,7 @@ Describe any challenges encountered while building the app.
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright 2020 Emily Park
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
