@@ -45,6 +45,8 @@ The following **additional** features are implemented:
 * [x] Users can see which of their followers retweeted a Tweet from the main timeline
 * [x] Users can press the home button to scroll back to the top
 * [x] Users can see user-specific timelines on their profile page
+* [x] Users can tap profile pictures or items in a followers/following tab to view the selected user's profile page
+* [x] Users can tap whoever retweeted a Tweet on their feed to see the retweeter's profile page
 
 ## Video Walkthrough
 
