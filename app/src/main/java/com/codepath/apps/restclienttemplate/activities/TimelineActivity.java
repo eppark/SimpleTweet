@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -23,6 +24,8 @@ import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.databinding.ActivityTimelineBinding;
 import com.codepath.apps.restclienttemplate.fragments.ReplyTweetDialogFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.TweetDao;
+import com.codepath.apps.restclienttemplate.models.TweetWithUser;
 import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.google.android.material.snackbar.Snackbar;
@@ -41,13 +44,14 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
 
     public static final String TAG = "TimelineActivity";
 
-    TwitterClient client;
+    public TwitterClient client;
     public List<Tweet> tweets;
     public TweetsAdapter adapter;
-    public User current;
+    public static User current;
     public ActivityTimelineBinding binding;
     EndlessRecyclerViewScrollListener scrollListener;
     View view;
+    TweetDao tweetDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +69,9 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_home);
+
+        client = TwitterApp.getRestClient(this);
+        tweetDao = ((TwitterApp) getApplicationContext()).getMyDatabase().tweetDao();
 
         // Initialize the list of tweets and adapter
         tweets = new ArrayList<>();
@@ -98,8 +105,19 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // Add scroll listener to RecyclerView
         binding.rvTweets.addOnScrollListener(scrollListener);
 
+        // Query for existing tweets in the DB
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Showing data from database");
+                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
+                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                adapter.clear();
+                adapter.addAll(tweetsFromDB);
+            }
+        });
+
         // Populate the timeline
-        client = TwitterApp.getRestClient(this);
         populateCurrentUserInfo();
         populateHomeTimeline();
 
@@ -170,10 +188,24 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
                 Log.i(TAG, "timeline onSuccess!" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
-                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    final List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
+                    tweets.addAll(tweetsFromNetwork);
                     adapter.notifyDataSetChanged();
                     binding.pbLoading.setVisibility(View.GONE);
                     binding.fabCompose.show();
+
+                    // Insert items to database
+                    AsyncTask.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "Saving data into database");
+                            // Insert users first so our key connection works
+                            List<User> usersFromNetwork = User.fromJsonTweetArray(tweetsFromNetwork);
+                            tweetDao.insertModel(usersFromNetwork.toArray(new User[0]));
+                            // Insert tweets next
+                            tweetDao.insertModel(tweetsFromNetwork.toArray(new Tweet[0]));
+                        }
+                    });
                 } catch (JSONException e) {
                     Log.e(TAG, "JSON exception", e);
                 }

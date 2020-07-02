@@ -188,4 +188,14 @@ public class TwitterClient extends OAuthBaseClient {
         params.put("screen_name", screen_name);
         client.post(apiUrl, params, "", handler);
     }
+
+    // See if a user is following another user
+    public void isFollowing(String source, String target, JsonHttpResponseHandler handler) {
+        String apiUrl = getApiUrl("friendships/show.json");
+        // Can specify query string params directly or through RequestParams.
+        RequestParams params = new RequestParams();
+        params.put("source_screen_name", source);
+        params.put("target_screen_name", target);
+        client.get(apiUrl, params, handler);
+    }
 }

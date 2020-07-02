@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,6 +12,8 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.TwitterApp;
+import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.fragments.ReplyTweetDialogFragment;
 import com.codepath.apps.restclienttemplate.fragments.TweetFragment;
 import com.codepath.apps.restclienttemplate.fragments.UserFragment;
@@ -18,10 +21,14 @@ import com.codepath.apps.restclienttemplate.adapters.ViewPagerAdapter;
 import com.codepath.apps.restclienttemplate.databinding.ActivityProfileBinding;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.models.User;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import org.json.JSONException;
 import org.parceler.Parcels;
+
+import okhttp3.Headers;
 
 public class ProfileActivity extends AppCompatActivity implements ReplyTweetDialogFragment.ReplyTweetDialogFragmentListener {
 
@@ -29,6 +36,8 @@ public class ProfileActivity extends AppCompatActivity implements ReplyTweetDial
     public User user;
     public ActivityProfileBinding binding;
     View view;
+    public static TwitterClient client;
+    public boolean following;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +60,8 @@ public class ProfileActivity extends AppCompatActivity implements ReplyTweetDial
         getSupportActionBar().setTitle(user.name);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupViewPager();
+
+        client = TwitterApp.getRestClient(this);
 
         binding.htabTabs.setupWithViewPager(binding.htabViewpager);
 
@@ -88,6 +99,62 @@ public class ProfileActivity extends AppCompatActivity implements ReplyTweetDial
                 binding.ivDimmer.setVisibility(View.GONE);
             }
         });
+
+        if (!user.screenName.equals(TimelineActivity.current.screenName)) {
+            client.isFollowing(TimelineActivity.current.screenName, user.screenName, new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Headers headers, JSON json) {
+                    try {
+                        binding.btnFollowing.setFocusableInTouchMode(true);
+                        following = json.jsonObject.getJSONObject("relationship").getJSONObject("target").getBoolean("followed_by");
+                        binding.btnFollowing.setVisibility(View.VISIBLE);
+                        setupFollowStatus();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSON exception for isFollowing", e);
+                    }
+                }
+
+                @Override
+                public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                }
+            });
+        } else {
+            binding.btnFollowing.setVisibility(View.GONE);
+        }
+
+        binding.btnFollowing.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (following) {
+                    client.unfollowUser(user.screenName, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            following = false;
+                            setupFollowStatus();
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            Log.e(TAG, "unfollowing onFailure", throwable);
+                        }
+                    });
+                } else {
+                    client.followUser(user.screenName, new JsonHttpResponseHandler() {
+                        @Override
+                        public void onSuccess(int statusCode, Headers headers, JSON json) {
+                            following = true;
+                            setupFollowStatus();
+                        }
+
+                        @Override
+                        public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                            Log.e(TAG, "following onFailure", throwable);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void setupViewPager() {
@@ -97,6 +164,18 @@ public class ProfileActivity extends AppCompatActivity implements ReplyTweetDial
         adapter.addFrag(UserFragment.newInstance(user, "Following"), "Following");
         adapter.addFrag(UserFragment.newInstance(user, "Followers"), "Followers");
         binding.htabViewpager.setAdapter(adapter);
+    }
+
+    private void setupFollowStatus() {
+        if (following) {
+            binding.btnFollowing.setSelected(true);
+            binding.btnFollowing.setTextColor(ContextCompat.getColor(this, R.color.white));
+            binding.btnFollowing.setText("FOLLOWING");
+        } else {
+            binding.btnFollowing.setSelected(false);
+            binding.btnFollowing.setTextColor(ContextCompat.getColor(this, R.color.primary_blue));
+            binding.btnFollowing.setText("FOLLOW");
+        }
     }
 
     @Override
@@ -141,4 +220,5 @@ public class ProfileActivity extends AppCompatActivity implements ReplyTweetDial
                 .setAction(R.string.snackbar_action, myOnClickListener)
                 .show(); // Don’t forget to show!
     }
+
 }

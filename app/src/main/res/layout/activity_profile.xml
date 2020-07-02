@@ -58,6 +58,20 @@
                 android:layout_marginTop="105dp"
                 tools:srcCompat="@tools:sample/avatars" />
 
+            <Button
+                android:id="@+id/btnFollowing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="300dp"
+                android:layout_marginTop="150dp"
+                android:background="@drawable/rounded_button"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:text="FOLLOW"
+                android:textColor="@color/button_follow_text_selector"
+                android:textStyle="bold"
+                android:visibility="visible" />
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/htab_toolbar"
                 android:layout_width="match_parent"

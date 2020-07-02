@@ -6,28 +6,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.TwitterApp;
+import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.activities.ProfileActivity;
+import com.codepath.apps.restclienttemplate.activities.TimelineActivity;
 import com.codepath.apps.restclienttemplate.models.User;
+import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
 
+import org.json.JSONException;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import okhttp3.Headers;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public static final String TAG = "UserAdapter";
     Context context;
     List<User> users;
+    TwitterClient client;
 
     // Pass in the context and list of users
     public UserAdapter(Context context, List<User> users) {
@@ -40,6 +50,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
+        client = TwitterApp.getRestClient(context);
         return new ViewHolder(view);
     }
 
@@ -64,20 +75,92 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         ImageView ivProfileImage;
         TextView tvScreenName;
         TextView tvName;
+        Button btnFollow;
+        boolean following;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvName = itemView.findViewById(R.id.tvName);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            btnFollow = itemView.findViewById(R.id.btnFollow);
             itemView.setOnClickListener(this);
         }
 
-        public void bind(User user) {
+        public void bind(final User user) {
             this.user = user;
             tvName.setText(user.name);
             tvScreenName.setText("@" + user.screenName);
             Glide.with(context).load(user.profileImageUrl).transform(new CircleCrop()).into(ivProfileImage);
+
+            // See if the current user is following this person
+            if (!user.screenName.equals(TimelineActivity.current.screenName)) {
+                client.isFollowing(TimelineActivity.current.screenName, user.screenName, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Headers headers, JSON json) {
+                        try {
+                            btnFollow.setFocusableInTouchMode(true);
+                            following = json.jsonObject.getJSONObject("relationship").getJSONObject("target").getBoolean("followed_by");
+                            btnFollow.setVisibility(View.VISIBLE);
+                            setupFollowStatus();
+                        } catch (JSONException e) {
+                            Log.e(TAG, "JSON exception for isFollowing", e);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+
+                    }
+                });
+            } else {
+                btnFollow.setVisibility(View.GONE);
+            }
+
+            btnFollow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (following) {
+                        client.unfollowUser(user.screenName, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                following = false;
+                                setupFollowStatus();
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                                Log.e(TAG, "unfollowing onFailure", throwable);
+                            }
+                        });
+                    } else {
+                        client.followUser(user.screenName, new JsonHttpResponseHandler() {
+                            @Override
+                            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                                following = true;
+                                setupFollowStatus();
+                            }
+
+                            @Override
+                            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                                Log.e(TAG, "following onFailure", throwable);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+        private void setupFollowStatus() {
+            if (following) {
+                btnFollow.setSelected(true);
+                btnFollow.setTextColor(ContextCompat.getColor(context, R.color.white));
+                btnFollow.setText("FOLLOWING");
+            } else {
+                btnFollow.setSelected(false);
+                btnFollow.setTextColor(ContextCompat.getColor(context, R.color.primary_blue));
+                btnFollow.setText("FOLLOW");
+            }
         }
 
         // When the user clicks on a row, show the profile for the selected user

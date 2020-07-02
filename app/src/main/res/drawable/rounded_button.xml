@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--  Focused states -->
+    <item android:state_focused="true" android:state_selected="false" android:drawable="@drawable/button_focus_unfollowing" />
+    <item android:state_focused="true" android:state_selected="true" android:drawable="@drawable/button_focus_following" />
+
+    <!--  Non focused states -->
+    <item android:state_selected="false" android:drawable="@drawable/button_unfocused_white" />
+    <item android:state_selected="true" android:drawable="@drawable/button_press" />
+
+    <item android:drawable="@drawable/button_unfocused_white" />
+</selector>
