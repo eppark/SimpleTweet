@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    android:background="@color/lighter_blue"
-    android:backgroundTint="@color/lighter_blue"
+    android:background="@color/primary_blue"
+    android:backgroundTint="@color/primary_blue"
     tools:context=".activities.LoginActivity">
 
     <Button
@@ -26,6 +26,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="200dp"
         android:scaleType="centerCrop"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
+        app:srcCompat="@drawable/ic_twitter_foreground" />
 
 </RelativeLayout>

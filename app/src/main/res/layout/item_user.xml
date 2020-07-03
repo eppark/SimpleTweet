@@ -66,9 +66,11 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:background="@drawable/rounded_button"
-        android:paddingLeft="15dp"
+        android:paddingStart="15dp"
         android:paddingEnd="15dp"
         android:text="Following"
+        android:focusableInTouchMode="false"
+        android:focusable="false"
         android:textColor="@color/button_follow_text_selector"
         android:textStyle="bold"
         android:visibility="visible" />

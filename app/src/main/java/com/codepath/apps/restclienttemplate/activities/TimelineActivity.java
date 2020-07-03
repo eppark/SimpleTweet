@@ -105,9 +105,23 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         // Add scroll listener to RecyclerView
         binding.rvTweets.addOnScrollListener(scrollListener);
 
+        // Query for existing tweets in the DB
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Showing data from database");
+                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
+                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                adapter.clear();
+                adapter.addAll(tweetsFromDB);
+            }
+        });
+
         // Populate the timeline
         populateCurrentUserInfo();
         populateHomeTimeline();
+
+        binding.pbLoading.setVisibility(View.GONE);
 
         // Set up the expanded image to only show when we click a media object
         // and hide when we click it again
@@ -177,9 +191,9 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     final List<Tweet> tweetsFromNetwork = Tweet.fromJsonArray(jsonArray);
+                    adapter.clear();
                     tweets.addAll(tweetsFromNetwork);
                     adapter.notifyDataSetChanged();
-                    binding.pbLoading.setVisibility(View.GONE);
                     binding.fabCompose.show();
 
                     // Insert items to database
@@ -202,18 +216,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "timeline onFailure!" + response, throwable);
-
-                // Query for existing tweets in the DB
-                AsyncTask.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.i(TAG, "Showing data from database");
-                        List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
-                        List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
-                        adapter.clear();
-                        adapter.addAll(tweetsFromDB);
-                    }
-                });
             }
         });
     }
