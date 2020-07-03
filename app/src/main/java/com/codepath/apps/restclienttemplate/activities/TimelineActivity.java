@@ -16,7 +16,7 @@ import android.view.View;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.fragments.ComposeTweetDialogFragment;
-import com.codepath.apps.restclienttemplate.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.restclienttemplate.helpers.EndlessRecyclerViewScrollListener;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.adapters.TweetsAdapter;
 import com.codepath.apps.restclienttemplate.TwitterApp;
@@ -104,18 +104,6 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
         };
         // Add scroll listener to RecyclerView
         binding.rvTweets.addOnScrollListener(scrollListener);
-
-        // Query for existing tweets in the DB
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "Showing data from database");
-                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
-                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
-                adapter.clear();
-                adapter.addAll(tweetsFromDB);
-            }
-        });
 
         // Populate the timeline
         populateCurrentUserInfo();
@@ -214,6 +202,18 @@ public class TimelineActivity extends AppCompatActivity implements ComposeTweetD
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "timeline onFailure!" + response, throwable);
+
+                // Query for existing tweets in the DB
+                AsyncTask.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.i(TAG, "Showing data from database");
+                        List<TweetWithUser> tweetWithUsers = tweetDao.recentItems();
+                        List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                        adapter.clear();
+                        adapter.addAll(tweetsFromDB);
+                    }
+                });
             }
         });
     }
