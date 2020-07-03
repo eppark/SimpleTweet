@@ -54,9 +54,19 @@ The following **additional** features are implemented:
 
 ## Video Walkthrough
 
-Here's a walkthrough of implemented user stories:
+Here's some walkthroughs of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+Endless scrolling of Tweets. Click images to see them larger. View user's profile page to see their own user timeline and their followers/following.
+
+![App Demo Feed Link](walkthroughs/walkthroughtweet.gif)
+
+Compose Tweets and reply to Tweets with modal dialog options. See how many characters you have remaining.
+
+![App Demo Tweet Link](walkthroughs/walkthroughsending.gif)
+
+Scroll up to refresh your feed. Click links to see them. Latest tweets persists even when there is no connection.
+
+![App Demo Refresh Link](walkthroughs/walkthroughlogout.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
