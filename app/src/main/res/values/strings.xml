@@ -14,5 +14,8 @@
     <string name="snackbar_reply_text">SENT REPLY</string>
     <string name="snackbar_action">VIEW</string>
     <string name="snackbar_compose_text">SENT TWEET</string>
+    <string name="twitter_invalid_credentials_error">Could not authenticate you</string>
+    <string name="lockout_key">LOCKOUT_KEY</string>
+    <string name="login_attempts_key">LOGIN_ATTEMPTS_KEY</string>
 
 </resources>
